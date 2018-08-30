@@ -9,8 +9,14 @@
 # squid3_custom_refresh_pattern
 
 # local subnets
+
+squid_http_port: 3129
+squid3_sslports: 443
+squid_https_port: 3130
 squid3_localnets:
-  - 10.0.0.0/8
+  - localhost
+https_whitelist_path: "/etc/squid/https_whitelist.txt"
+http_whitelist_path: "/etc/squid/http_whitelist.txt"
 
 squid3_sslports:
   - 443
