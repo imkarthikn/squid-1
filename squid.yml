@@ -1,0 +1,8 @@
+---
+- name: Installing squid 
+  hosts: localhost
+  user: devopsuser
+  become: true
+  roles: 
+        - squid
+        

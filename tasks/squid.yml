@@ -1,0 +1,33 @@
+---
+- name: Install squid and iptables-services packages
+  yum: name={{item}} state=installed
+  with_items:
+        - squid
+        - iptables-services
+- name: Copy the squid configuration
+  template: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
+  with_items:
+        - { src: '/etc/ansible/roles/squid/files/https_whitelist.txt', dest: '/etc/squid/https_whitelist.txt' }
+        - { src: '/etc/ansible/roles/squid/files/http_whitelist.txt', dest: '/etc/squid/http_whitelist.txt' }
+#        - { src: '/etc/ansible/roles/squid/files/squid.conf.j2', dest: '/etc/squid/squid.conf' }
+  notify: restart squid 
+
+- name: file delete
+  file: path='/etc/squid/squid.conf' state=absent
+- name: Copy the Iptables configuration
+  copy: src=/etc/ansible/roles/squid/files/squid.conf.j2 dest=/etc/squid/squid.conf owner=root group=root mode=0644
+  notify: restart squid
+  
+#- name: Log format 
+  
+  #shell: "grep -q -F logformat /etc/squid/squid.conf || echo -e logformat squid %\{%Y-%m-%d %H:%M:%S\}tl,%03tu %ts.%03tu %6tr %>a:%<p %la:%lp %Ss/%03Hs %\{header\}>h %st %rm %ru %rp %>st %un ORIGINAL_DST/%<A >> /etc/squid/squid.conf"
+  #lineinfile:
+   #     dest: /etc/squid/squid.conf
+    #    line: "logformat squid %{%Y-%m-%d %H:%M:%S}tl,%03tu %ts.%03tu %6tr %>a:%<p %la:%lp %Ss/%03Hs %{header}>h %st %rm %ru %rp %>st %un ORIGINAL_DST/%<A"
+  
+  #notify: restart squid
+  
+  
+- name: Copy the Iptables configuration 
+  template: src=/etc/ansible/roles/squid/files/iptables.txt dest=/etc/sysconfig/iptables owner=root group=root mode=0600
+  notify: restart iptables

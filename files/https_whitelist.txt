@@ -6,4 +6,4 @@
 .datadoghq.com
 .centos.org
 .docker.io
-.postcodeanywhere.co.uk
+.google.com
